@@ -20,28 +20,34 @@ public class PlayerController : Shootable
 
     public NavMeshAgent trailer;
     public Transform start,end;
-
-    public float Speed = 100f;
+    CharacterController controller;
+    [Range(10,100)]
+    public float Speed =10f;
     private void Start()
     {
-        trailer.transform.position = start.position;
-        trailer.SetDestination(end.position);
+        controller = GetComponent<CharacterController>();
+        if(trailer!=null)
+        {
+            trailer.transform.position = start.position;
+            trailer.SetDestination(end.position);
+        }
     }
     private void FixedUpdate()
     {
+
+        float moveX = Input.GetAxis("Horizontal") * Speed * Time.deltaTime;
+        float moveZ = Input.GetAxis("Vertical") * Speed * Time.deltaTime;
+
+        Vector3 move = transform.right * moveX + transform.forward * moveZ;
+
+        controller.Move(move * Speed * Time.deltaTime);
+
         /*
-                float moveX = Input.GetAxis("Horizontal") * Speed * Time.deltaTime;
-                float moveZ = Input.GetAxis("Vertical") * Speed * Time.deltaTime;
-
-                Vector3 move = transform.right * moveX + transform.forward * moveZ;
-
-                controller.Move(move * Speed * Time.deltaTime);
-        */
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position, Vector3.forward))
-        {
-            Debug.DrawLine(transform.position,Vector3.forward, Color.red);
-        }
+                RaycastHit hit;
+                if (Physics.Raycast(transform.position, Vector3.forward))
+                {
+                    Debug.DrawLine(transform.position,Vector3.forward, Color.red);
+                }*/
 
     }
 

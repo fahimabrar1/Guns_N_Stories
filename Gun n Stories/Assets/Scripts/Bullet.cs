@@ -13,6 +13,7 @@ public class Bullet : MonoBehaviour
         ............................................................................................
         ............................................................................................
         */
+    public static float firehole;
     Transform transform;
 
     private void Start()
@@ -21,6 +22,6 @@ public class Bullet : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        transform.Translate(Vector3.forward * 3 * Time.deltaTime);
+        transform.Translate(Vector3.forward * firehole * Time.deltaTime);
     }
 }

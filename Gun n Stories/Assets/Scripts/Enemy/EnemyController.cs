@@ -15,7 +15,8 @@ public class EnemyController : Shootable
     ............................................................................................
     ............................................................................................
     */
-    public static bool playerfound,shot;
+
+    public bool playerfound,shot;
     GameObject player;
     
     public Transform muzzle;
@@ -23,15 +24,16 @@ public class EnemyController : Shootable
     private void Start()
     {
         playerfound = false;
-        shot = false;
+        shot = true;
+        Bullet.firehole = FireRate;
     }
 
     /*
     ............................................................................................
     ............................................................................................
            
-        FixedUpdate() method is responsible to look at player when it hits the collider
-                then he casts ray at the player and shoots/Reloads untill the rat can hit.
+        FixedUpdate() method is responsible to cast ray when the player hits the collider
+                         and shoots/Reloads untill the rat can hit.
 
     ............................................................................................
     ............................................................................................
@@ -41,22 +43,15 @@ public class EnemyController : Shootable
     {
         if(playerfound)
         {
-            transform.LookAt(player.transform);
             
-            RaycastHit hit;
-            Physics.Raycast(muzzle.transform.position, muzzle.TransformDirection(Vector3.forward), out hit);
-            Debug.DrawLine(muzzle.transform.position, hit.transform.position,Color.green);
-            Debug.Log("Player Magnitude" +hit.transform.position.magnitude);
-            Debug.Log("Muzzel Magnitude" +muzzle.transform.position.magnitude);
-
-            if (hit.collider.gameObject.tag.Equals("Player"))
-            {
-                if (!shot)
+           
+                if (shot)
                 {
-                    StartCoroutine(Fire(hit.transform));
+                    StartCoroutine(Fire(player.transform));
                 }
-            }
+          
         }
+        
     }
 
 
@@ -71,7 +66,7 @@ public class EnemyController : Shootable
   */
     IEnumerator Fire(Transform PlayerMagnitude)
     {
-        shot = true;
+        shot = false;
         int ammo = 0;
         float aim = Mathf.Sqrt((PlayerMagnitude.position.magnitude * PlayerMagnitude.position.magnitude) + (muzzle.transform.position.magnitude * muzzle.transform.position.magnitude));
         while (magsize > ammo)
@@ -79,6 +74,7 @@ public class EnemyController : Shootable
             if (playerfound)
             {
                 GameObject obj = Instantiate(bullet, muzzle.transform.position, muzzle.transform.rotation);
+                Destroy(obj, 3);
                 yield return new WaitForSeconds(0.3f);
             }
             ammo++;
@@ -99,7 +95,7 @@ public class EnemyController : Shootable
     {
 
         yield return new WaitForSeconds(WaitForReloud);
-        shot = false;
+        shot = true;
     }
 
     /*
